@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Meta tags para PWA (App na tela inicial) -->
+    <meta name="theme-color" content="#0056b3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Check Fácil">
+    
+    <title>Check Fácil</title>
+    
+    <style>
+        :root {
+            --azul-primario: #0056b3;
+            --azul-escuro: #003d82;
+            --azul-bebe: #e6f2ff;
+            --branco: #ffffff;
+            --preto: #1a1a1a;
+            --cinza-borda: #cbd5e1;
+            --cinza-claro: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--azul-bebe);
+            color: var(--preto);
+            padding-bottom: 40px;
+        }
+
+        /* Header fixo no topo */
+        header {
+            background-color: var(--branco); /* Fundo branco para combinar com a logo */
+            color: var(--azul-primario); /* Texto azul */
+            padding: 10px 20px; /* Padding ajustado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px; /* Espaço entre o ícone e o texto */
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 26px; /* Aumentei um pouco a fonte */
+            font-weight: 800; /* Deixei mais gordinho */
+            letter-spacing: -0.5px; /* Juntei as letras igual na logo */
+            margin: 0;
+            font-style: italic; /* Deixei em itálico igual a logo */
+        }
+
+        .logo-icon {
+            width: 48px; /* Tamanho do ícone SVG */
+            height: 48px;
+            fill: var(--azul-primario); /* Cor azul primária */
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: var(--branco);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: var(--azul-primario);
+            border-bottom: 2px solid var(--azul-bebe);
+            padding-bottom: 8px;
+            margin: 25px 0 15px 0;
+            font-weight: 600;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 15px;
+            color: var(--preto);
+        }
+
+        select, input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 8px;
+            background-color: var(--cinza-claro);
+            font-size: 16px;
+            color: var(--preto);
+            transition: all 0.3s;
+        }
+
+        select:focus, input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: var(--azul-primario);
+            background-color: var(--branco);
+            box-shadow: 0 0 0 3px var(--azul-bebe);
+        }
+
+        /* Estilização do input de arquivo (Câmera) */
+        .file-upload-wrapper {
+            position: relative;
+            margin-top: 5px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--azul-bebe);
+            color: var(--azul-primario);
+            border: 2px dashed var(--azul-primario);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-btn:active {
+            background-color: #cce4ff;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid var(--cinza-borda);
+            display: none;
+        }
+
+        .image-preview.visible {
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--azul-primario);
+            color: var(--branco);
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 35px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
+        }
+
+        button.submit-btn:hover {
+            background-color: var(--azul-escuro);
+        }
+
+        button.submit-btn:disabled {
+            background-color: var(--cinza-borda);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Loader simples */
+        .loader {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+            color: var(--azul-primario);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <!-- Ícone SVG de um carro com check embutido -->
+    <svg class="logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <!-- Corpo do carro -->
+        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z"/>
+        <!-- Rodas (círculos vazios pra dar um estilo) -->
+        <circle cx="7.5" cy="14.5" r="1.5"/>
+        <circle cx="16.5" cy="14.5" r="1.5"/>
+        <!-- Símbolo de Check por cima -->
+        <path d="M10 16.5l-3.5-3.5 1.41-1.41L10 13.67l7.59-7.59L19 7.5l-9 9z" fill="#ffffff" stroke="var(--azul-primario)" stroke-width="1.5"/>
+    </svg>
+    <h1>Check Fácil</h1>
+</header>
+
+<div class="container">
+    <form id="checklistForm">
+        
+        <label for="carro">Viatura:</label>
+        <select id="carro" required>
+            <option value="">Selecione a Viatura</option>
+            <!-- Adicione as placas da sua frota aqui -->
+            <option value="CARRO 10 - QYC8082">CARRO 10 - QYC8082</option>
+            <option value="CARRO 11 - XYZ1234">CARRO 11 - XYZ1234</option>
+            <option value="CARRO 12 - ABC9876">CARRO 12 - ABC9876</option>
+        </select>
+
+        <h3 class="section-title">Inspeção Visual (Fotos)</h3>
+
+        <!-- Lateral Esquerda -->
+        <label>Lateral Esquerda:</label>
+        <div class="file-upload-wrapper">
+            <label for="fotoLE" class="file-upload-btn">📷 Tirar Foto</label>
+            <input type="file" id="fotoLE" accept="image/*" capture="environment" onchange="previewImage(this, 'previewLE')" required>
+            <img id="previewLE" class="image-preview" alt="Preview Lateral Esquerda">
+        </div>
+
+        <!-- Lateral Direita -->
+        <label>Lateral Direita:</label>
+        <div class="file-upload-wrapper">
+            <label for="fotoLD" class="file-upload-btn">📷 Tirar Foto</label>
+            <input type="file" id="fotoLD" accept="image/*" capture="environment" onchange="previewImage(this, 'previewLD')" required>
+            <img id="previewLD" class="image-preview" alt="Preview Lateral Direita">
+        </div>
+
+        <!-- Frente -->
+        <label>Frente:</label>
+        <div class="file-upload-wrapper">
+            <label for="fotoFrente" class="file-upload-btn">📷 Tirar Foto</label>
+            <input type="file" id="fotoFrente" accept="image/*" capture="environment" onchange="previewImage(this, 'previewFrente')" required>
+            <img id="previewFrente" class="image-preview" alt="Preview Frente">
+        </div>
+
+        <!-- Traseira -->
+        <label>Traseira:</label>
+        <div class="file-upload-wrapper">
+            <label for="fotoTraseira" class="file-upload-btn">📷 Tirar Foto</label>
+            <input type="file" id="fotoTraseira" accept="image/*" capture="environment" onchange="previewImage(this, 'previewTraseira')" required>
+            <img id="previewTraseira" class="image-preview" alt="Preview Traseira">
+        </div>
+
+        <h3 class="section-title">Verificação Mecânica</h3>
+
+        <label for="oleo">Nível de Óleo:</label>
+        <select id="oleo" required>
+            <option value="">Selecione...</option>
+            <option value="OK">Tá OK</option>
+            <option value="Nível Baixo">Nível Baixo</option>
+            <option value="Precisei Completar">Precisei Completar</option>
+        </select>
+
+        <label for="dataProximaTrocaOleo">Data da próxima troca de óleo (Adesivo):</label>
+        <input type="date" id="dataProximaTrocaOleo" required>
+
+        <label for="kmProximaTrocaOleo">KM da próxima troca de óleo (Adesivo):</label>
+        <input type="number" id="kmProximaTrocaOleo" placeholder="Ex: 95000" required>
+
+        <label for="arrefecimento">Nível de Arrefecimento:</label>
+        <select id="arrefecimento" required>
+            <option value="">Selecione...</option>
+            <option value="OK">Tá OK</option>
+            <option value="Nível Baixo">Nível Baixo</option>
+            <option value="Precisei Completar">Precisei Completar</option>
+        </select>
+
+        <label for="pneus">Verificação dos Pneus (4 + Estepe):</label>
+        <select id="pneus" onchange="checkPneus()" required>
+            <option value="">Selecione...</option>
+            <option value="Todos calibrados">Todos Calibrados</option>
+            <option value="Precisei calibrar">Precisei Calibrar</option>
+            <option value="Algum precisa trocar">Algum precisa trocar</option>
+        </select>
+
+        <div id="divTrocaPneu" class="hidden">
+            <label for="pneusDetalhe">Qual pneu precisa trocar?</label>
+            <input type="text" id="pneusDetalhe" placeholder="Ex: Dianteiro direito">
+        </div>
+
+        <h3 class="section-title">Fechamento</h3>
+
+        <label>Foto do KM Total:</label>
+        <div class="file-upload-wrapper">
+            <label for="fotoKm" class="file-upload-btn">📷 Tirar Foto do Painel</label>
+            <input type="file" id="fotoKm" accept="image/*" capture="environment" onchange="previewImage(this, 'previewKm')" required>
+            <img id="previewKm" class="image-preview" alt="Preview KM">
+        </div>
+
+        <label for="km">Confirme o KM Total (Apenas números):</label>
+        <input type="number" id="km" placeholder="Ex: 85400" required>
+
+        <button type="button" id="btnSubmit" class="submit-btn" onclick="enviarDados()">Enviar Checklist</button>
+        <div id="loader" class="loader">⏳ Sincronizando com a base de dados...</div>
+    </form>
+</div>
+
+<script>
+    // Função para mostrar a miniatura da foto
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const btnLabel = input.previousElementSibling;
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.add('visible');
+                btnLabel.innerText = "🔄 Trocar Foto";
+            }
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "";
+            preview.classList.remove('visible');
+            btnLabel.innerText = "📷 Tirar Foto";
+        }
+    }
+
+    // Função para exibir o campo condicional dos pneus
+    function checkPneus() {
+        var status = document.getElementById('pneus').value;
+        const divDetalhe = document.getElementById('divTrocaPneu');
+        if (status === 'Algum precisa trocar') {
+            divDetalhe.classList.remove('hidden');
+            document.getElementById('pneusDetalhe').required = true;
+        } else {
+            divDetalhe.classList.add('hidden');
+            document.getElementById('pneusDetalhe').required = false;
+            document.getElementById('pneusDetalhe').value = "";
+        }
+    }
+
+    // Função para converter arquivo em Base64
+    function toBase64(file) {
+        return new Promise((resolve, reject) => {
+            if (!file) { resolve(null); return; }
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    // Função principal de envio
+    async function enviarDados() {
+        // Validação básica do formulário HTML5
+        const form = document.getElementById('checklistForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const btn = document.getElementById('btnSubmit');
+        const loader = document.getElementById('loader');
+        
+        btn.disabled = true;
+        btn.innerText = 'Processando...';
+        loader.style.display = 'block';
+
+        try {
+            // Conversão em paralelo para otimizar velocidade
+            const fotosPromisses = {
+                'Lateral_Esquerda': toBase64(document.getElementById('fotoLE').files[0]),
+                'Lateral_Direita': toBase64(document.getElementById('fotoLD').files[0]),
+                'Frente': toBase64(document.getElementById('fotoFrente').files[0]),
+                'Traseira': toBase64(document.getElementById('fotoTraseira').files[0]),
+                'KM_Painel': toBase64(document.getElementById('fotoKm').files[0])
+            };
+
+            const fotos = {
+                'Lateral_Esquerda': await fotosPromisses['Lateral_Esquerda'],
+                'Lateral_Direita': await fotosPromisses['Lateral_Direita'],
+                'Frente': await fotosPromisses['Frente'],
+                'Traseira': await fotosPromisses['Traseira'],
+                'KM_Painel': await fotosPromisses['KM_Painel']
+            };
+
+            const payload = {
+                carro: document.getElementById('carro').value,
+                oleo: document.getElementById('oleo').value,
+                dataProximaTrocaOleo: document.getElementById('dataProximaTrocaOleo').value,
+                kmProximaTrocaOleo: document.getElementById('kmProximaTrocaOleo').value,
+                arrefecimento: document.getElementById('arrefecimento').value,
+                pneus: document.getElementById('pneus').value,
+                pneusDetalhe: document.getElementById('pneusDetalhe').value,
+                km: document.getElementById('km').value,
+                fotos: fotos
+            };
+
+            // INSIRA A URL DO GOOGLE APPS SCRIPT ABAIXO
+            const api_url = "https://script.google.com/macros/s/AKfycbyntbdpHPxQ329e0TnGgCwpt2-96P_xhtVg1LSqd4g2WTAkmLlG2YvHmqueEsvTzE1Q/exec"; 
+
+            const response = await fetch(api_url, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            
+            if(result.status === "success") {
+                alert("✅ Checklist concluído com sucesso!");
+                form.reset();
+                // Limpa as miniaturas das fotos
+                document.querySelectorAll('.image-preview').forEach(img => img.classList.remove('visible'));
+                document.querySelectorAll('.file-upload-btn').forEach(lbl => lbl.innerText = "📷 Tirar Foto");
+                document.getElementById('divTrocaPneu').classList.add('hidden');
+                
+                // Rola para o topo
+                window.scrollTo(0, 0);
+            } else {
+                alert("❌ Erro ao enviar para o Drive: " + result.message);
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("❌ Falha na conexão. Verifique a internet e se todas as fotos foram tiradas.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Enviar Checklist';
+            loader.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
